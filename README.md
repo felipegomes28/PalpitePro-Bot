@@ -1,8 +1,8 @@
-# BetInsight Bot
+# PalpitePro Bot
 
 ## Visão Geral
 
-O BetInsight Bot é um bot para Telegram projetado para fornecer análises estatísticas detalhadas e previsões de probabilidade para partidas de futebol. O objetivo principal é auxiliar usuários a tomarem decisões mais informadas em apostas esportivas, processando dados históricos, estatísticas de times e odds de mercado.
+O PalpitePro Bot é um bot para Telegram projetado para fornecer análises estatísticas detalhadas e previsões de probabilidade para partidas de futebol. O objetivo principal é auxiliar usuários a tomarem decisões mais informadas em apostas esportivas, processando dados históricos, estatísticas de times e odds de mercado.
 
 O bot recebe uma solicitação do usuário via mensagem no Telegram, contendo os times e a liga da partida desejada. Em seguida, ele consulta a API-Football para obter dados relevantes, processa essas informações usando modelos estatísticos (como a distribuição de Poisson Bivariada) e retorna um relatório completo com probabilidades para diversos mercados de apostas, além de uma sugestão de "Melhor Aposta" baseada na detecção de valor (Value Bet).
 
@@ -10,7 +10,7 @@ Este projeto foi desenvolvido com base em um Documento de Requisitos do Produto 
 
 ## Funcionalidades Implementadas
 
-Até o momento, o BetInsight Bot implementa as seguintes funcionalidades:
+Até o momento, o PalpitePro PalpitePro Bot implementa as seguintes funcionalidades:
 
 1.  **Integração com Telegram:**
     *   Recebe mensagens de usuários via Telegram.
@@ -47,7 +47,7 @@ Até o momento, o BetInsight Bot implementa as seguintes funcionalidades:
 O código está organizado da seguinte forma:
 
 ```
-/betinsight_bot
+/PalpitePro_bot
 |-- src/
 |   |-- __init__.py
 |   |-- main.py         # Ponto de entrada, lógica do bot Telegram
@@ -79,7 +79,7 @@ Para configurar e executar o bot localmente:
 1.  **Clone o Repositório (se aplicável):**
     ```bash
     git clone <url_do_repositorio>
-    cd betinsight_bot
+    cd PalpitePro_bot
     ```
 2.  **Crie um Ambiente Virtual (Recomendado):**
     ```bash
