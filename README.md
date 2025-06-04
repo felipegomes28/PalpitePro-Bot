@@ -10,7 +10,7 @@ Este projeto foi desenvolvido com base em um Documento de Requisitos do Produto 
 
 ## Funcionalidades Implementadas
 
-Até o momento, o PalpitePro PalpitePro Bot implementa as seguintes funcionalidades:
+Até o momento, o PalpitePro Bot implementa as seguintes funcionalidades:
 
 1.  **Integração com Telegram:**
     *   Recebe mensagens de usuários via Telegram.
