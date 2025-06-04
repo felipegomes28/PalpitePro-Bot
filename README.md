@@ -151,5 +151,5 @@ Para que o bot funcione continuamente, ele precisa ser hospedado em um servidor 
     *   **Testes Unitários e de Integração:** Adicionar testes automatizados para garantir a qualidade do código.
 
 ---
-*Documentação gerada em [Data Atual]*
+*Documentação gerada em 04/06/2025*
 
