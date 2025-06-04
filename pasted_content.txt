@@ -1,0 +1,175 @@
+Documento de Requisitos do Produto (PRD) - BetInsight Bot
+Versão Final 2.0
+Data: 5 de Junho de 2025
+
+1. Visão Geral do Produto
+Campo	Descrição
+Nome	BetInsight Bot
+Objetivo	Bot de Telegram que analisa estatísticas esportivas via API-Football e prevê cenários de apostas com probabilidades calculadas
+Problema Central	Apostadores tomam decisões subótimas por falta de análise rápida de dados históricos e estatísticos
+Solução	Análise automatizada de 7 cenários de apostas via mensagem simples no Telegram
+Stakeholders	Apostadores finais, desenvolvedores, provedores de dados (API-Football), casas de apostas (parcerias)
+2. Fluxo Principal do Usuário
+Diagram
+Code
+
+
+
+
+
+
+3. Requisitos Funcionais
+ID	Descrição	Prioridade	Métricas
+RF01	Processar mensagens livres no formato [Time Casa] x [Time Fora], [Competição]	MUST	Taxa de acerto > 98%
+RF02	Coletar via API-Football:
+- Últimos 5 confrontos diretos
+- Últimos 5 jogos por time na competição	MUST	Disponibilidade 99%
+RF03	Calcular probabilidades para:
+1. Resultado Final (1X2)
+2. Handicaps (Asiático/Europeu)
+3. Over/Under Gols
+4. Ambas Marcam (GG/NG)
+5. HT/FT
+6. Placar Exato
+7. Total de Cantos	MUST	Precisão > 60%
+RF04	Retornar relatório com:
+- Estatísticas-chave
+- Probabilidades em %
+- Sugestão de "Melhor Aposta"	MUST	Tempo resposta ≤ 15s
+RF05	Sistema de cache para dados estáticos	SHOULD	Redução 40% chamadas API
+4. Requisitos Não-Funcionais
+Categoria	Especificação
+Desempenho	Resposta ≤ 15s (pico: 1.000 req/min)
+Confiabilidade	Uptime 99.5% (SLAs definidos)
+Segurança	Criptografia AES-256 (dados sensíveis)
+Usabilidade	Comandos intuitivos (avaliação SUS > 80)
+Integrações	API-Football, Telegram Bot API
+Escalabilidade	Arquitetura serverless (AWS Lambda)
+5. Modelo de Dados
+json
+{
+  "jogo": {
+    "time_casa": "São Paulo",
+    "time_fora": "Flamengo",
+    "competicao": "Brasileiro",
+    "confrontos_diretos": [
+      {"data": "2024-05-10", "resultado": "2-1", "cantos": 13, ...}
+    ],
+    "desempenho_recente": {
+      "time_casa": {"gols_casa": 1.8, "cantos_casa": 6.2, ...},
+      "time_fora": {"gols_fora": 1.5, "cantos_fora": 5.7, ...}
+    }
+  },
+  "previsoes": {
+    "1X2": {"casa": 65.2, "empate": 22.1, "fora": 12.7},
+    "handicap_asiatico": [{"handicap": "-1.5", "prob": 58.3}],
+    "over_under": [{"limite": 2.5, "over": 72.4}],
+    "ambos_marcam": {"sim": 68.9},
+    "ht_ft": [{"cenario": "Casa/Casa", "prob": 49.2}],
+    "placar_exato": [{"placar": "2-1", "prob": 18.7}],
+    "cantos": [{"limite": 10.5, "over": 81.3}]
+  }
+}
+6. Algoritmos-Chave
+1. Cálculo 1X2 (Poisson Bivariado):
+
+python
+from scipy.stats import poisson
+
+def calcular_1x2(forca_ataque_casa, forca_defesa_fora, forca_ataque_fora, forca_defesa_casa):
+    lambda_casa = forca_ataque_casa * forca_defesa_fora
+    lambda_fora = forca_ataque_fora * forca_defesa_casa
+    
+    prob_vitoria_casa = 0
+    prob_empate = 0
+    prob_vitoria_fora = 0
+
+    for i in range(0, 6):  # gols time casa
+        for j in range(0, 6):  # gols time fora
+            prob = poisson.pmf(i, lambda_casa) * poisson.pmf(j, lambda_fora)
+            if i > j:
+                prob_vitoria_casa += prob
+            elif i == j:
+                prob_empate += prob
+            else:
+                prob_vitoria_fora += prob
+                
+    return {
+        'casa': round(prob_vitoria_casa * 100, 1),
+        'empate': round(prob_empate * 100, 1),
+        'fora': round(prob_vitoria_fora * 100, 1)
+    }
+2. Detecção de Value Bets:
+
+python
+def detectar_value_bet(prob_calculada, odd_mercado):
+    valor_esperado = (prob_calculada / 100) * odd_mercado
+    return valor_esperado > 1.0  # +EV
+7. Roadmap Detalhado
+Fase	Entregáveis	Marcos	Prazo
+MVP	<ul><li>Integração API-Football</li><li>Processador de mensagens</li><li>Cálculo básico 7 cenários</li></ul>	Lançamento beta fechado	8 semanas
+V1.1	<ul><li>Sistema de cache</li><li>Otimização modelos</li><li>Painel de monitoramento</li></ul>	Precisão > 60%	+4 semanas
+V1.2	<ul><li>Integração odds em tempo real</li><li>Sistema de alertas</li><li>Suporte multi-idioma</li></ul>	Parceria com 1 casa de apostas	+6 semanas
+V2.0	<ul><li>Modo "carteira"</li><li>Recomendações personalizadas</li><li>Análise de bankroll</li></ul>	Feature completa	+12 semanas
+8. Métricas de Sucesso
+KPI	Meta	Fonte de Verificação
+Precisão Média	> 65%	Validação histórica
+Retenção (D30)	> 50%	Analytics (Mixpanel)
+NPS	> 70	Pesquisas trimestrais
+ROI Médio Usuários	+7%	Dados agregados
+Tempo Resposta	< 10s	CloudWatch Metrics
+9. Riscos e Mitigação
+Risco	Impacto	Mitigação
+Limitação API-Football	Alto	Planos B: Scraping (fallback), múltiplos provedores
+Oscilação de Odds	Médio	Atualizações em tempo real via websockets
+Viés em Modelos	Crítico	Validação contínua com dados reais, ajuste de pesos
+Conformidade Legal	Alto	Consultoria jurídica especializada desde Fase 1
+10. Próximos Passos para Desenvolvimento
+Configurar Ambiente:
+
+bash
+# Criar bot no Telegram
+/newbot via @BotFather
+
+# Registrar na API-Football
+https://api-football.com/signup
+Implementar Núcleo Analítico:
+
+python
+# Estrutura básica
+import api_football
+
+def analisar_jogo(mensagem):
+    # Extrair times e competição
+    # Buscar dados na API
+    # Calcular probabilidades
+    # Formatara resposta
+    return relatorio
+Testar Cenários Críticos:
+
+gherkin
+# Exemplo BDD
+Feature: Análise de Flamengo x Vasco
+  Scenario: Dados completos disponíveis
+    Given Uma mensagem "Flamengo x Vasco, Brasileiro"
+    When O bot processa a requisição
+    Then Deve retornar probabilidades para 7 cenários
+     And O tempo de resposta deve ser < 15s
+11. Apêndices Técnicos
+Endpoints Essenciais API-Football:
+
+bash
+# Confrontos diretos
+GET /fixtures/headtohead?h2h={id_timeA}-{id_timeB}&last=5
+
+# Estatísticas por time
+GET /teams/statistics?team={id}&league={id_liga}&season=2025
+
+# Probabilidades de mercado
+GET /odds?fixture={id_jogo}&bookmaker=1
+Bibliotecas Recomendadas:
+
+plaintext
+- Python: scipy (poisson), pandas (análise), requests (APIs)
+- Infra: AWS Lambda (serverless), DynamoDB (cache), CloudWatch
+- DevOps: Terraform (IaC), GitHub Actions (CI/CD)
