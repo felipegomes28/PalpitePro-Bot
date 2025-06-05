@@ -1,10 +1,10 @@
-Documento de Requisitos do Produto (PRD) - BetInsight Bot
+Documento de Requisitos do Produto (PRD) - PalpitesPro Bot
 Versão Final 2.0
 Data: 5 de Junho de 2025
 
 1. Visão Geral do Produto
 Campo	Descrição
-Nome	BetInsight Bot
+Nome	PalpitesPro Bot
 Objetivo	Bot de Telegram que analisa estatísticas esportivas via API-Football e prevê cenários de apostas com probabilidades calculadas
 Problema Central	Apostadores tomam decisões subótimas por falta de análise rápida de dados históricos e estatísticos
 Solução	Análise automatizada de 7 cenários de apostas via mensagem simples no Telegram
