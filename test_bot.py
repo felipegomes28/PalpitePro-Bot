@@ -12,7 +12,10 @@ class TestBot(unittest.TestCase):
         async def mock_ctx():
             return type('MockContext', (), {'send': lambda self, msg: msg})
         
-        result = await self.bot.get_command('ping').callback(mock_ctx())
+        async def test_ping():
+            result = await self.bot.get_command('ping').callback(mock_ctx())
+            return result
+        result = self.bot.loop.run_until_complete(test_ping())
         self.assertEqual(result, 'Pong!')
 
     def test_command_list(self):
